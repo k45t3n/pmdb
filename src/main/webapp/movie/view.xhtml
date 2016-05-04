@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:forgeview="http://jboss.org/forge/view"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value='#{movieBean.id}'/>
+		<f:event type="preRenderView" listener='#{movieBean.retrieve}'/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Movie"/>
+
+	<ui:define name="header">
+		Movie
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Movie
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="movieBeanMovieTitle" value="Title:"/>
+			<h:outputText id="movieBeanMovieTitle" value="#{movieBean.movie.title}"/>
+			<h:outputText/>
+			<h:outputLabel for="movieBeanMoviePoster" value="Poster:"/>
+			<p:graphicImage id="movieBeanMoviePoster" value="#{movieBean.image}">
+				<f:param name="movieId" value="#{movieBean.movie.id}"/>
+			</p:graphicImage>
+			<h:outputText/>
+			<h:outputLabel for="movieBeanMovieReview" value="Review:"/>
+			<h:inputTextarea id="movieBeanMovieReview" value="#{movieBean.movie.review}" cols="80" rows="2" style="width:500px" />
+			<h:outputText/>
+			<h:outputLabel for="movieBeanMovieActors" value="Actors:"/>
+			<p:dataTable id="movieBeanMovieActors" value="#{forgeview:asList(movieBean.movie.actors)}" var="_item" paginator="true" paginatorPosition="bottom" rows="5">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="First Name"/>
+					</f:facet>
+					<h:outputText id="itemFirstName" value="#{_item.firstName}"/>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Last Name"/>
+					</f:facet>
+					<h:outputText id="itemLastName" value="#{_item.lastName}"/>
+				</p:column>
+				<p:column style="width:24px">
+					<f:facet name="header">
+						<h:outputText value=""/>
+					</f:facet>
+					<h:link outcome="/actor/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemLinkView" value="view"/>
+					</h:link>
+				</p:column>
+			</p:dataTable>
+			<h:outputText/>
+			<h:outputLabel for="movieBeanMovieGenres" value="Genres:"/>
+			<h:dataTable id="movieBeanMovieGenres" styleClass="data-table" value="#{forgeview:asList(movieBean.movie.genres)}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name"/>
+					</f:facet>
+					<h:link outcome="/genre/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemName" value="#{_item.name}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<h:outputText/>
+			<h:outputLabel for="movieBeanMovieDateOfRelease" value="Date Of Release:"/>
+			<h:outputText id="movieBeanMovieDateOfRelease" value="#{movieBean.movie.dateOfRelease}">
+				<f:convertDateTime type="date"/>
+			</h:outputText>
+			<h:outputText/>
+			<h:outputLabel for="movieBeanMovieStatus" value="Status:"/>
+			<h:link id="movieBeanMovieStatus" outcome="/status/view" rendered="#{!empty movieBean.movie.status}" value="#{movieBean.movie.status.name}">
+				<f:param name="id" value="#{movieBean.movie.status.id}"/>
+			</h:link>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search" styleClass="btn btn-primary"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true" styleClass="btn btn-primary"/>
+			<h:link value="Create New" outcome="create" styleClass="btn btn-primary"/>
+		</div>
+	</ui:define>
+
+</ui:composition>

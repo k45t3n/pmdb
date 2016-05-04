@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:forgeview="http://jboss.org/forge/view"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value='#{actorBean.id}'/>
+		<f:event type="preRenderView" listener='#{actorBean.retrieve}'/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Create Actor"/>
+
+	<ui:define name="header">
+		Actor
+	</ui:define>
+
+	<ui:define name="subheader">
+		<c:choose>
+			<c:when test='#{!empty actorBean.id}'>
+				Edit existing Actor
+			</c:when>
+			<c:otherwise>
+				Create a new Actor
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error"/>
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+				<h:outputLabel for="actorBeanActorDateOfBirth" value="Date Of Birth:"/>
+				<h:panelGroup>
+					<h:inputText id="actorBeanActorDateOfBirth" required="true" value="#{actorBean.actor.dateOfBirth}">
+						<f:convertDateTime type="date"/>
+					</h:inputText>
+					<h:message for="actorBeanActorDateOfBirth" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText value="*"/>
+				<h:outputLabel for="actorBeanActorFirstName" value="First Name:"/>
+				<h:panelGroup>
+					<h:inputText id="actorBeanActorFirstName" maxLength="64" required="true" value="#{actorBean.actor.firstName}"/>
+					<h:message for="actorBeanActorFirstName" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText value="*"/>
+				<h:outputLabel for="actorBeanActorLastName" value="Last Name:"/>
+				<h:panelGroup>
+					<h:inputText id="actorBeanActorLastName" maxLength="64" required="true" value="#{actorBean.actor.lastName}"/>
+					<h:message for="actorBeanActorLastName" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText value="*"/>
+				<h:outputLabel for="actorBeanActorMovies" value="Movies:"/>
+				<h:panelGroup>
+					<ui:param name="_collection" value="#{actorBean.actor.movies}"/>
+					<h:dataTable id="actorBeanActorMovies" styleClass="data-table" value="#{forgeview:asList(_collection)}" var="_item">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Date Of Release"/>
+							</f:facet>
+							<h:link outcome="/movie/view">
+								<f:param name="id" value="#{_item.id}"/>
+								<h:outputText id="itemDateOfRelease" value="#{_item.dateOfRelease}">
+									<f:convertDateTime type="date"/>
+								</h:outputText>
+							</h:link>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Title"/>
+							</f:facet>
+							<h:link outcome="/movie/view">
+								<f:param name="id" value="#{_item.id}"/>
+								<h:outputText id="itemTitle" value="#{_item.title}"/>
+							</h:link>
+						</h:column>
+						<h:column footerClass="remove-column" headerClass="remove-column">
+							<h:commandLink action="#{_collection.remove(_item)}" styleClass="remove-button"/>
+						</h:column>
+					</h:dataTable>
+					<h:panelGrid columnClasses=",remove-column" columns="2" styleClass="data-table-footer">
+						<h:selectOneMenu converter="#{movieBean.converter}" id="actorBeanActorMoviesSelect" value="#{requestScope['actorBeanActorMoviesSelect']}">
+							<f:selectItem/>
+							<f:selectItems itemLabel="#{forgeview:display(_item)}" itemValue="#{_item}" value="#{movieBean.all}" var="_item"/>
+						</h:selectOneMenu>
+						<h:commandLink action="#{_collection.add(requestScope['actorBeanActorMoviesSelect'])}" id="actorBeanActorMoviesAdd" onclick="if (document.getElementById(document.forms[0].id+':actorBeanActorMoviesSelect').selectedIndex &lt; 1) { alert('Must select a Movie'); return false; }" styleClass="add-button"/>
+					</h:panelGrid>
+				</h:panelGroup>
+				<h:outputText/>
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action='#{actorBean.update}' styleClass="btn btn-primary"/>
+				<c:choose>
+					<c:when test='#{!empty actorBean.id}'>
+						<h:link value="Cancel" outcome="view" styleClass="btn btn-primary">
+							<f:param name="id" value='#{actorBean.id}'/>
+						</h:link>
+						<h:commandLink value="Delete" action='#{actorBean.delete}' styleClass="btn btn-primary"/>
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search" styleClass="btn btn-primary"/>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

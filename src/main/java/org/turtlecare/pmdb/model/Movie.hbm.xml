@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 29.04.2016 10:06:31 by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="org.turtlecare.pmdb.model.Movie" table="MOVIE">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="dateOfRelease" type="java.util.Date">
+            <column name="DATE_OF_RELEASE" />
+        </property>
+        <property name="title" type="java.lang.String">
+            <column name="TITLE" />
+        </property>
+        <primitive-array name="poster" table="MOVIE">
+            <key>
+                <column name="ID" />
+            </key>
+            <index></index>
+            <element type="byte">
+                <column name="POSTER" />
+            </element>
+        </primitive-array>
+        <set name="actors" table="MOVIE_ACTOR_MAP" inverse="false" lazy="true">
+            <key>
+                <column name="ID" />
+            </key>
+            <one-to-many class="org.turtlecare.pmdb.model.Actor" />
+        </set>
+        <set name="genres" table="MOVIE_GENRE_MAP" inverse="false" lazy="true">
+            <key>
+                <column name="ID" />
+            </key>
+            <one-to-many class="org.turtlecare.pmdb.model.Genre" />
+        </set>
+        <many-to-one name="status" class="org.turtlecare.pmdb.model.Status" fetch="join">
+            <column name="STATUS" />
+        </many-to-one>
+        <property name="review" type="java.lang.String">
+            <column name="REVIEW" />
+        </property>
+    </class>
+</hibernate-mapping>
