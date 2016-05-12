@@ -34,7 +34,7 @@
 	<ui:define name="footer"/>
 
 	<ui:define name="main">
-		<h:form id="create">
+		<h:form id="create" enctype="multipart/form-data">
 			<h:messages globalOnly="true" styleClass="error"/>
 
 			<h:panelGrid columnClasses="label,component,required" columns="3">
@@ -129,6 +129,12 @@
 						<f:selectItems itemLabel="#{forgeview:display(_item.name)}" itemValue="#{_item}" value="#{statusBean.all}" var="_item" />
 					</h:selectOneMenu>
 					<h:message for="movieBeanMovieStatus" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="movieBeanMovieUploadFile" value="Poster:"/>
+				<h:panelGroup>
+					<h:inputFile value="#{movieBean.movie.uploadFile}" />
+					<h:message for="movieBeanMovieUploadFile" styleClass="error"/>
 				</h:panelGroup>
 				<h:outputText/>
 			</h:panelGrid>

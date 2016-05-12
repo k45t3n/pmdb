@@ -1,13 +1,17 @@
 package org.turtlecare.pmdb.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.io.IOUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
+import javax.servlet.http.Part;
 
 /**
  * The persistent class for the movie database table.
@@ -34,6 +38,23 @@ public class Movie implements Serializable {
 
 	@Lob
 	private byte[] poster;
+	
+	@Transient
+	private Part uploadFile;
+	
+	public Part getUploadFile() {
+		return uploadFile;
+	}
+	
+	public void setUploadFile(Part uploadFile) {
+		this.uploadFile = uploadFile;
+		try {
+			this.poster = IOUtils.toByteArray(uploadFile.getInputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	//bi-directional many-to-many association to Actor
 	@JsonIgnore
